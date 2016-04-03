@@ -7,25 +7,29 @@ public:
         while(p_zero <= nums.end()) {
             if(p_zero != nums.end())
                 max = bigger(max, 0);
-            int count = count_if(p, p_zero, isnegative);
-            if(count % 2 == 0) {
-                max = bigger(accumulate_multi(p, p_zero, 1), max);
-            } else {
-                vector<int>::iterator a = find_if_foward(p, p_zero);
-                vector<int>::iterator b = find_if_reserse(p, p_zero);
-                if(a == b) {
-                    max = bigger(*a, max);
-                    max = bigger(accumulate_multi(p, a, 1), max);
-                    max = bigger(accumulate_multi(a + 1, p_zero, 1), max);
+            if(p != p_zero) {
+                int count = count_if(p, p_zero, isnegative);
+                if(count % 2 == 0) {
+                    max = bigger(accumulate(p, p_zero, 1, multiplies<int>()), max);
                 } else {
-                    int tmp = accumulate_multi(a + 1, b, 1);
-                    max = bigger(tmp, max);
-                    max = bigger(accumulate_multi(p, a + 1, tmp), max);
-                    max = bigger(accumulate_multi(b, p_zero, tmp), max);
+                    vector<int>::iterator a = find_if(p, p_zero, isnegative);
+                    vector<int>::iterator b = find_if_reserse(p, p_zero);
+                    if(a == b) {
+                        max = bigger(*a, max);
+                        if(a != p)
+                            max = bigger(accumulate(p, a, 1, multiplies<int>()), max);
+                        if(a + 1 != p_zero)
+                            max = bigger(accumulate(a + 1, p_zero, 1, multiplies<int>()), max);
+                    } else {
+                        int tmp = accumulate(a + 1, b, 1, multiplies<int>());
+                        max = bigger(tmp, max);
+                        max = bigger(accumulate(p, a + 1, tmp, multiplies<int>()), max);
+                        max = bigger(accumulate(b, p_zero, tmp, multiplies<int>()), max);
+                    }
                 }
+                if(p_zero == nums.end())
+                    break;
             }
-            if(p_zero == nums.end())
-                break;
             do {
             	p = p_zero + 1;
             	p_zero = find(p, nums.end(), 0);
@@ -60,18 +64,5 @@ public:
             b--;
         }
         return a;
-    }
-    int accumulate_multi(vector<int>::iterator a, vector<int>::iterator b, int start) {
-	    if(a == b) {
-	        if(start == 1)
-	            return INT_MIN;
-            else 
-                return start;
-	    }
-        while(a != b) {
-            start *= (*a);
-            a++;
-        }
-	    return start;
     }
 };
