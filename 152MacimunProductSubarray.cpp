@@ -45,17 +45,6 @@ public:
     static bool isnegative(int a) {
         return (a < 0);
     }
-    static int multi(int a, int b) {
-        return a * b;
-    }
-    vector<int>::iterator find_if_foward(vector<int>::iterator a, vector<int>::iterator b) {
-        while(a != b) {
-            if(*a < 0)
-                return a;
-            a++;
-        }
-        return b;
-    }
     vector<int>::iterator find_if_reserse(vector<int>::iterator a, vector<int>::iterator b) {
         b--;
         while(b != a) {
