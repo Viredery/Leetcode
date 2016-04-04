@@ -8,12 +8,13 @@ public:
             if(p_zero != nums.end())
                 max = bigger(max, 0);
             if(p != p_zero) {
-                int count = count_if(p, p_zero, isnegative);
+                int count = count_if(p, p_zero, bind2nd(less<int>(), 0));
                 if(count % 2 == 0) {
                     max = bigger(accumulate(p, p_zero, 1, multiplies<int>()), max);
                 } else {
-                    vector<int>::iterator a = find_if(p, p_zero, isnegative);
-                    vector<int>::iterator b = find_if_reserse(p, p_zero);
+                    vector<int>::iterator a = find_if(p, p_zero, bind2nd(less<int>(), 0));
+                    vector<int>::iterator b = find_if(static_cast<vector<int>::reverse_iterator>(p_zero),
+                                    static_cast<vector<int>::reverse_iterator>(p), bind2nd(less<int>(), 0)).base() - 1;
                     if(a == b) {
                         max = bigger(*a, max);
                         if(a != p)
@@ -39,19 +40,7 @@ public:
         }
         return max;
     }
-    static int bigger(int a, int b) {
+    inline static int bigger(int a, int b) {
         return (a > b ? a : b);
-    }
-    static bool isnegative(int a) {
-        return (a < 0);
-    }
-    vector<int>::iterator find_if_reserse(vector<int>::iterator a, vector<int>::iterator b) {
-        b--;
-        while(b != a) {
-            if(*b < 0)
-                return b;
-            b--;
-        }
-        return a;
     }
 };
