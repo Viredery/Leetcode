@@ -35,8 +35,8 @@ public class Solution {
         		} else {
         			//when "element"
         			if (posS < s.length()
-        			    && element == s.charAt(posS)
-        				&& true == judgeEndPoint(s, posS + 1, p, posP))
+        			        && element == s.charAt(posS)
+        				    && true == judgeEndPoint(s, posS + 1, p, posP))
         				return true;
         		} 
         	}
