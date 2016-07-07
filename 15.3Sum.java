@@ -29,7 +29,6 @@ public class Solution {
         	i++;
         	while (i <= nums.length - 3 && nums[i] == nums[i - 1])
         		i++;
-
         }
         return result;
     }
