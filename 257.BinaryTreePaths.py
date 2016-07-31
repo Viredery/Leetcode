@@ -9,8 +9,9 @@ class Solution:
     # @param {TreeNode} root
     # @return {string[]}
     def binaryTreePaths(self, root):
-        result, dictPaths = [], {"%d" % node.val: node for node in [root] if node}
-        while dictPaths:
-            result.extend([key for key, value in dictPaths.items() if value.left is None and value.right is None])
-            dictPaths = {"%s->%d" % (key, n.val): n for key, value in dictPaths.items() for n in [value.left, value.right] if n}
-        return result
+        if not root:
+            return []
+        elif not root.left and not root.right:
+            return [str(root.val)]
+        else:
+            return list(map(lambda x: str(root.val)+"->"+x, self.binaryTreePaths(root.left)+self.binaryTreePaths(root.right)))
