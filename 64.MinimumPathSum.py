@@ -8,7 +8,7 @@ class Solution(object):
         for i in range(len(grid[0])):
             rowMinimum.append(rowMinimum[-1] + grid[0][i])
         del rowMinimum[0]
-        for j in range(len(grid))[1:]:
+        for j in range(1, len(grid)):
             for i in range(len(grid[0])):
                 if i == 0:
                     rowMinimum[i] = rowMinimum[i] + grid[j][i]
