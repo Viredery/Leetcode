@@ -6,8 +6,10 @@ public:
         for (int i = 0; i != s.size(); i++)
             for (int j = i; j >= 0; j--)
                 if (canBreak[j])
-                    if (find(wordDict.begin(), wordDict.end(), s.substr(j, i-j+1)) != wordDict.end())
+                    if (find(wordDict.begin(), wordDict.end(), s.substr(j, i-j+1)) != wordDict.end()) {
                         canBreak[i+1] = true;
+                        break;
+                    }
         return canBreak.back();
     }
 };
