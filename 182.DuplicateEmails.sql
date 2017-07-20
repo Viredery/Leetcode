@@ -1,3 +1,3 @@
-ELECT Email FROM
-    (SELECT Email, COUNT(Email) AS Number FROM Person GROUP BY Email) AS TableTmp
-    WHERE TableTmp.Number > 1;
+SELECT Email
+FROM (SELECT Email, Count(Email) AS Num FROM Person GROUP BY Email) As Tmp
+WHERE Num > 1;
