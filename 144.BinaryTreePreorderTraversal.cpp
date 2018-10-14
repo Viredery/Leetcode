@@ -10,19 +10,21 @@
 class Solution {
 public:
     vector<int> preorderTraversal(TreeNode* root) {
-        vector<int> res;
-        stack<TreeNode *> arr;
-        while (!arr.empty() || root) {
+        vector<int> preorderNum;
+        stack<TreeNode*> visitedNodes;
+        
+        while (!visitedNodes.empty() || root) {
             while (root) {
-                res.push_back(root->val);
-                arr.push(root);
+                visitedNodes.push(root);
+                preorderNum.push_back(root->val);
                 root = root->left;
             }
-            if (!arr.empty()) {
-                root = arr.top()->right;
-                arr.pop();
+            if (!visitedNodes.empty()) {
+                root = visitedNodes.top()->right;
+                visitedNodes.pop();
             }
         }
-        return res;
+        
+        return preorderNum;
     }
 };

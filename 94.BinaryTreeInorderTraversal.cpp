@@ -9,26 +9,22 @@
  */
 class Solution {
 public:
-    vector<int> postorderTraversal(TreeNode* root) {
-        vector<int> postorderNum;
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> inorderNum;
         stack<TreeNode*> visitedNodes;
-        TreeNode* lastVisited = nullptr;
         while (!visitedNodes.empty() || root) {
             while (root) {
                 visitedNodes.push(root);
                 root = root->left;
             }
-            if (visitedNodes.empty())
-                break;
-            auto node = visitedNodes.top();
-            if (!node->right || node->right == lastVisited) {
+            if (!visitedNodes.empty()) {
+                auto node = visitedNodes.top();
                 visitedNodes.pop();
-                postorderNum.push_back(node->val);
-                lastVisited = node;
-            } else {
+                
+                inorderNum.push_back(node->val);
                 root = node->right;
             }
         }
-        return postorderNum;
+        return inorderNum;
     }
 };
