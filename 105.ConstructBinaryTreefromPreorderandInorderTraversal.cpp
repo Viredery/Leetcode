@@ -10,23 +10,29 @@
 class Solution {
 public:
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        TreeNode *root = nullptr;
-        buildTree(root, preorder, 0, preorder.size()-1, inorder, 0, inorder.size()-1);
-        return root;
+        return buildTree(preorder, inorder, 
+                         0, preorder.size(), 0, inorder.size());
     }
 private:
-    void buildTree(TreeNode* &root, vector<int>& preorder, int preleft, int preright,
-                   vector<int>& inorder, int inleft, int inright) {
-        if (inleft > inright) return;
-        root = new TreeNode(preorder[preleft]);
-        int inmid = searchVal(inorder, inleft, inright, preorder[preleft]);
-        buildTree(root->left, preorder, preleft+1, preleft+inmid-inleft, inorder, inleft, inmid-1);
-        buildTree(root->right, preorder, preleft+inmid-inleft+1, preright, inorder, inmid+1, inright);
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder,
+                   int prestart, int preend, int instart, int inend) {
+        if (prestart >= preend)
+            return nullptr;
+        int val = preorder[prestart];
+        TreeNode* root = new TreeNode(val);
+        int pos = find(inorder, instart, inend, val);
+        root->left = buildTree(preorder, inorder, 
+                               prestart+1, prestart+1+pos-instart,
+                               instart, pos);
+        root->right = buildTree(preorder, inorder, 
+                                prestart+1+pos-instart, preend,
+                                pos+1, inend);
+        return root;
     }
-    int searchVal(vector<int>& vec, int l, int r, int val) {
-        for(int i = l; i <= r; i++)
-            if (vec[i] == val)
+    
+    int find(vector<int>& inorder, int instart, int inend, int val) {
+        for(int i = instart; i != inend; i++)
+            if (inorder[i] == val)
                 return i;
-        return -1;
     }
 };
