@@ -1,41 +1,38 @@
 class Solution {
 public:
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        int n1 = nums1.size(), n2 = nums2.size(), sum = n1 + n2;
-        if (sum % 2 != 0)
-            return findNSortedArrays(nums1, 0, nums2, 0, sum/2);
-        return (findNSortedArrays(nums1, 0, nums2, 0, sum/2) +
-                findNSortedArrays(nums1, 0, nums2, 0, sum/2-1)) / 2.0;
+        int n1 = nums1.size(), n2 = nums2.size();
+        int m1 = (n1 + n2 - 1) / 2, m2 = (n1 + n2) / 2;
+        return (findNthSortedArrays(nums1, 0, nums2, 0, m1) 
+                + findNthSortedArrays(nums1, 0, nums2, 0, m2)) / 2.0;
     }
     
 private:
-    double findNSortedArrays(vector<int>& nums1, int s1,
-                             vector<int>& nums2, int s2,
-                             int target) {
-        if (target == 0) {
-            if (s1 < nums1.size() && s2 < nums2.size())
-                return min(nums1[s1], nums2[s2]);
-            else if (s1 < nums1.size())
-                return nums1[s1];
+    double findNthSortedArrays(vector<int>& nums1, int start1, 
+                               vector<int>& nums2, int start2,
+                               int nth) {
+        if (start1 == nums1.size())
+            return nums2[start2 + nth];
+        if (start2 == nums2.size())
+            return nums1[start1 + nth];
+        if (nth == 0)
+            return min(nums1[start1], nums2[start2]);
+        if (nth == 1) {
+            if (nums1[start1] > nums2[start2])
+                return findNthSortedArrays(nums1, start1, nums2, start2+1, nth-1);
             else
-                return nums2[s2];
+                return findNthSortedArrays(nums1, start1+1, nums2, start2, nth-1);
         }
-        if (s1 >= nums1.size())
-            return nums2[s2+target];
-        if (s2 >= nums2.size())
-            return nums1[s1+target];
-        int m1 = INT_MAX, m2 = INT_MAX;
-        if (s1 + (target-1) / 2 < nums1.size())
-            m1 = nums1[s1 + (target-1) / 2];
-        if (s2 + (target-1) / 2 < nums2.size())
-            m2 = nums2[s2 + (target-1) / 2];
-
-        if (m1 < m2)
-            return findNSortedArrays(nums1, s1+(target-1)/2+1, 
-                                     nums2, s2, 
-                                     target-(target-1)/2-1);
+        
+        int max1 = INT_MAX, max2 = INT_MAX;
+        int mid = nth / 2;
+        if (start1 + mid < nums1.size())
+            max1 = nums1[start1 + mid];
+        if (start2 + mid < nums2.size())
+            max2 = nums2[start2 + mid];
+        if (max1 < max2)
+            return findNthSortedArrays(nums1, start1+mid, nums2, start2, nth-mid);
         else
-            return findNSortedArrays(nums1, s1, 
-                                     nums2, s2+(target-1)/2+1, 
-                                     target-(target-1)/2-1);        
+            return findNthSortedArrays(nums1, start1, nums2, start2+mid, nth-mid);
+    }
 };
