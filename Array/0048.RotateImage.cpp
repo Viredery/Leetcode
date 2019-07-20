@@ -8,7 +8,8 @@ public:
 private:
     void rotate_level(vector<vector<int>>& matrix, int level) {
         int start = level, end = matrix.size() - 1 - level;
-        for (int i = 0; i != matrix.size() - 2 * level - 1; i++) {
+        int size = end - start;
+        for (int i = 0; i != size; i++) {
             int tmp                = matrix[start][start+i];
             matrix[start][start+i] = matrix[end-i][start];
             matrix[end-i][start]   = matrix[end][end-i];
