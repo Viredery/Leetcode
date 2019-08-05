@@ -12,18 +12,15 @@ public:
     vector<int> inorderTraversal(TreeNode* root) {
         vector<int> inorderNum;
         stack<TreeNode*> visitedNodes;
-        while (!visitedNodes.empty() || root) {
+        while (root || !visitedNodes.empty()) {
             while (root) {
                 visitedNodes.push(root);
                 root = root->left;
             }
-            if (!visitedNodes.empty()) {
-                auto node = visitedNodes.top();
-                visitedNodes.pop();
-                
-                inorderNum.push_back(node->val);
-                root = node->right;
-            }
+            root = visitedNodes.top();
+            visitedNodes.pop();
+            inorderNum.push_back(root->val);
+            root = root->right;
         }
         return inorderNum;
     }
