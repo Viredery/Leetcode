@@ -9,18 +9,18 @@ private:
             return false;
         
         int mid = left + (right - left) / 2;
-        if (nums[mid] == target || nums[right] == target)
+        if (nums[mid] == nums[left] && nums[mid] != target)
+            return search(nums, left+1, mid-1, target)
+                    || search(nums, mid+1, right, target);
+        if (nums[mid] == target)
             return true;
-        if (nums[mid] == nums[right] && nums[mid] != target)
-            return search(nums, left, mid-1, target)
-                    || search(nums, mid+1, right-1, target);
         
-        if (nums[mid] <= nums[right]) {
-            if (nums[mid] < target && nums[right] > target)
-                return search(nums, mid+1, right, target);
-            return search(nums, left, mid-1, target);
+        if (nums[left] <= nums[mid]) {
+            if (nums[left] <= target && nums[mid] > target)
+                return search(nums, left, mid-1, target);
+            return search(nums, mid+1, right, target);
         } else {
-            if (nums[mid] < target || nums[right] > target)
+            if (nums[mid] < target && nums[right] >= target)
                 return search(nums, mid+1, right, target);
             return search(nums, left, mid-1, target);
         }
