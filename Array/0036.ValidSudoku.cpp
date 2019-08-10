@@ -18,7 +18,7 @@ private:
     
     bool isValidPosition(vector<vector<char>>& board, int y, int x) {
         int cellY = y / 3 * 3, cellX = x / 3 * 3;
-        for (int i = 0; i != 8; i++) {
+        for (int i = 0; i != 9; i++) {
             if (board[y][i] == board[y][x] && i != x)
                 return false;
             if (board[i][x] == board[y][x] && i != y)
