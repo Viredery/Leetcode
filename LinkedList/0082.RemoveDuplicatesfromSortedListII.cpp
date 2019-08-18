@@ -14,11 +14,17 @@ public:
         head = &dummy;
         
         while (head->next) {
-            head = head->next;
-            ListNode* node = head->next;
-            while (node && node->val == head->val)
-                node = node->next;
-            head->next = node;
+            ListNode* left = head->next;
+            ListNode* right = left->next;
+            bool duplicate = false;
+            while (right && right->val == left->val) {
+                duplicate = true;
+                right = right->next;
+            }
+            if (duplicate)
+                head->next = right;
+            else
+                head = head->next;
         }
         return dummy.next;
     }
