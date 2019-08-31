@@ -10,9 +10,6 @@
 class Solution {
 public:
     int maxDepth(TreeNode* root) {
-        if (NULL == root)
-            return 0;
-        int leftDepth = maxDepth(root->left), rightDepth = maxDepth(root->right);
-        return 1 + (leftDepth > rightDepth ? leftDepth : rightDepth);
+        return root ? max(maxDepth(root->left), maxDepth(root->right)) + 1 : 0;
     }
 };
