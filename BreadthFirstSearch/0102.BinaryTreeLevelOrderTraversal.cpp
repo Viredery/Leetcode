@@ -27,7 +27,7 @@ public:
                 if (node->right)
                     visitedNodes.push(node->right);
             }
-            levelOrderNum.push_back(orderNum);
+            levelOrderNum.push_back(std::move(orderNum));
         }
         return levelOrderNum;
     }
