@@ -10,15 +10,19 @@
 class Solution {
 public:
     bool isBalanced(TreeNode* root) {
-        return getHeight(root) != -1;
+        return height(root) != -1;
     }
 private:
-    int getHeight(TreeNode* root) {
+    int height(TreeNode* root) {
         if (root == nullptr)
             return 0;
-        int leftHeight = getHeight(root->left);
-        int rightHeight = getHeight(root->right);
-        if (leftHeight == -1 || rightHeight == -1 || abs(leftHeight - rightHeight) > 1)
+        int leftHeight = height(root->left);
+        if (leftHeight == -1)
+            return -1;
+        int rightHeight = height(root->right);
+        if (rightHeight == -1)
+            return -1;
+        if (abs(leftHeight - rightHeight) > 1)
             return -1;
         return max(leftHeight, rightHeight) + 1;
     }
