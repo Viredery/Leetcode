@@ -9,51 +9,43 @@
 class Solution {
 public:
     ListNode* sortList(ListNode* head) {
-        if(head == NULL || head->next == NULL)
+        if (head == nullptr || head->next == nullptr)
             return head;
-        ListNode* formerHead = head;
-        ListNode* latterHead = getMiddleNode(head);
-        formerHead = sortList(formerHead);
-        latterHead = sortList(latterHead);
-        return Merge(formerHead, latterHead);
+        
+        ListNode* head1 = head;
+        ListNode* head2 = findMediumNode(head);
+        
+        head1 = sortList(head1);
+        head2 = sortList(head2);
+        return merge(head1, head2);
     }
-    ListNode* getMiddleNode(ListNode* head) {
-        ListNode *fast, *slow, *prev;
-        prev = head;
-        fast = slow = head->next;
-        while(true) {
-            if(fast != NULL && fast->next != NULL)
-                fast = fast->next->next;
-            else
-                break;
-            prev = slow;
+private:
+    ListNode* findMediumNode(ListNode* head) {
+        ListNode* fast = head->next, *slow = head;
+        while (fast->next && fast->next->next) {
+            fast = fast->next->next;
             slow = slow->next;
         }
-        prev->next = NULL;
-        return slow;
+        ListNode* post = slow->next;
+        slow->next = nullptr;
+        return post;
     }
-    ListNode* Merge(ListNode* formerHead, ListNode* latterHead) {
-        ListNode result(0);
-        ListNode* current_p = &result;
-        while(true) {
-            if(formerHead != NULL && latterHead != NULL) {
-                if(formerHead->val < latterHead->val) {
-                    current_p->next = formerHead;
-                    current_p = formerHead;
-                    formerHead = formerHead->next;
-                } else {
-                    current_p->next = latterHead;
-                    current_p = latterHead;
-                    latterHead = latterHead->next;
-                }
+    
+    ListNode* merge(ListNode* head1, ListNode* head2) {
+        ListNode dummy(0);
+        ListNode* ptr = &dummy;
+        while (head1 && head2) {
+            if (head1->val < head2->val) {
+                ptr->next = head1;
+                head1 = head1->next;
             } else {
-                if(formerHead == NULL)
-                    current_p->next = latterHead;
-                else
-                    current_p->next = formerHead;
-                break;
+                ptr->next = head2;
+                head2 = head2->next;
             }
+            ptr = ptr->next;
         }
-        return result.next;
+        ListNode* head = head1 ? head1 : head2;
+        ptr->next = head;
+        return dummy.next;
     }
 };
