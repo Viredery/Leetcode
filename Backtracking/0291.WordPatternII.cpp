@@ -1,6 +1,6 @@
 class Solution {
 public:
-    bool wordPattern(string pattern, string str) {
+    bool wordPatternMatch(string pattern, string str) {
         return dfs(pattern, 0, str, 0, 1);
     }
 private:
