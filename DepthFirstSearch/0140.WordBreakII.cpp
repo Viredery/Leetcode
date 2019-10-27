@@ -2,11 +2,11 @@ class Solution {
 public:
     vector<string> wordBreak(string s, vector<string>& wordDict) {
         vector<vector<int>> dp(s.size() + 1, vector<int>());
-        priority_queue<int> next;
-        next.push(0);
-        while (!next.empty()) {
-            int i = next.top();
-            next.pop();
+        vector<bool> next(s.size(), false);
+        next[0] = true;
+        for (int i = 0; i != s.size(); i++) {
+            if (!next[i])
+                continue;
             for (int j = 0; j != wordDict.size(); j++) {
                 int n = wordDict[j].size();
                 if (i + n > s.size() || 
@@ -15,8 +15,7 @@ public:
                     continue;
                 dp[i+n].push_back(j);
                 if (i + n != s.size())
-                    next.push(i + wordDict[j].size());
-                
+                    next[i + wordDict[j].size()] = true;
             }
         }
 
