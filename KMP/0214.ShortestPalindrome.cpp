@@ -4,15 +4,15 @@ public:
         string rev(s);
         std::reverse(rev.begin(), rev.end());      
         string sNew = s + "#" + rev;
-        vector<int> pattern(sNew.size(), 0);
+        vector<int> kmp(sNew.size(), 0);
 
-        for (int i = 1, j = 0; i != pattern.size(); i++) {
+        for (int i = 1, j = 0; i != kmp.size(); i++) {
             while (j && sNew[i] != sNew[j])
-                j = pattern[j-1];
+                j = kmp[j-1];
             if (sNew[i] == sNew[j])
                 j++;
-            pattern[i] = j;
+            kmp[i] = j;
         }
-        return rev.substr(0, s.size() - pattern.back()) + s;
+        return rev.substr(0, s.size() - kmp.back()) + s;
     }
 };
