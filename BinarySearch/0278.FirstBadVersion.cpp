@@ -1,12 +1,13 @@
+// Forward declaration of isBadVersion API.
+bool isBadVersion(int version);
+
 class Solution {
 public:
-    int searchInsert(vector<int>& nums, int target) {
-        if (nums.back() < target)
-            return nums.size();
-        int l = 0, r = nums.size() - 1;
+    int firstBadVersion(int n) {
+        int l = 1, r = n;
         while (l < r) {
             int mid = l + (r - l >> 1);
-            if (nums[mid] >= target)
+            if (isBadVersion(mid))
                 r = mid;
             else
                 l = mid + 1;
