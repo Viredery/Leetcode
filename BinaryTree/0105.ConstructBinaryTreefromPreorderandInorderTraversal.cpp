@@ -10,29 +10,30 @@
 class Solution {
 public:
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        return buildTree(preorder, inorder, 
-                         0, preorder.size(), 0, inorder.size());
+        return buildTree(preorder, inorder,
+                 0, preorder.size() - 1, 0, inorder.size() - 1);
     }
 private:
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder,
-                   int prestart, int preend, int instart, int inend) {
-        if (prestart >= preend)
+                   int pl, int pr, int il, int ir) {
+        if (pl > pr)
             return nullptr;
-        int val = preorder[prestart];
+        int val = preorder[pl];
         TreeNode* root = new TreeNode(val);
-        int pos = find(inorder, instart, inend, val);
-        root->left = buildTree(preorder, inorder, 
-                               prestart+1, prestart+1+pos-instart,
-                               instart, pos);
-        root->right = buildTree(preorder, inorder, 
-                                prestart+1+pos-instart, preend,
-                                pos+1, inend);
+        int pos = find(inorder, il, ir, val);
+        root->left = buildTree(preorder, inorder,
+                               pl+1, pl+pos-il,
+                               il, pos-1);
+        root->right = buildTree(preorder, inorder,
+                                pl+1+pos-il, pr,
+                                pos+1, ir);
         return root;
     }
-    
-    int find(vector<int>& inorder, int instart, int inend, int val) {
-        for(int i = instart; i != inend; i++)
+
+    int find(vector<int>& inorder, int il, int ir, int val) {
+        for(int i = il; i <= ir; i++)
             if (inorder[i] == val)
                 return i;
+        return -1;
     }
 };

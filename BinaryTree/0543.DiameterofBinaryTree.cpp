@@ -9,19 +9,19 @@
  */
 class Solution {
 public:
-    int maxPathSum(TreeNode* root) {
-        maxSum = INT_MIN;
+    int diameterOfBinaryTree(TreeNode* root) {
         dfs(root);
-        return maxSum;
+        return diameter;
     }
 private:
-    int maxSum;
+    int diameter = 0;
     int dfs(TreeNode* root) {
         if (!root)
             return 0;
-        int maxLeft = max(0, dfs(root->left));
-        int maxRight = max(0, dfs(root->right));
-        maxSum = max(maxSum, root->val + maxLeft + maxRight);
-        return root->val + (maxLeft > maxRight ? maxLeft : maxRight);
+        int numLeft = dfs(root->left);
+        int numRight = dfs(root->right);
+        
+        diameter = max(diameter, numLeft + numRight);
+        return max(numLeft + 1, numRight + 1);
     }
 };
