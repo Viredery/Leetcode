@@ -11,16 +11,11 @@ public:
     ListNode* swapPairs(ListNode* head) {
         ListNode dummy = ListNode(0);
         dummy.next = head;
-        head = &dummy;
-        
-        ListNode* pre = head, *cur = head, *post = head->next;
-        while (post && post->next) {
-            post = post->next->next;
-            cur = cur->next;
-            pre->next = cur->next;
-            pre->next->next = cur;
-            cur->next = post;
-            pre = cur;
+        for (ListNode* ptr = &dummy; ptr->next && ptr->next->next; ptr = ptr->next->next) {
+            ListNode* cur = ptr->next, *post = cur->next;
+            cur->next = post->next;
+            post->next = cur;
+            ptr->next = post;
         }
         return dummy.next;
     }

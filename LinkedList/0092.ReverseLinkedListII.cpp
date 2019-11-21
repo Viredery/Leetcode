@@ -11,22 +11,23 @@ public:
     ListNode* reverseBetween(ListNode* head, int m, int n) {
         ListNode dummy(0);
         dummy.next = head;
-        head = &dummy;
-        ListNode* left = head, *right = head;
-        int i = 1;
-        while (i < m) {
-            left = left->next;
-            right = right->next;
-            i++;
+
+        ListNode* a = &dummy, *c = &dummy;
+        for (int _ = 0; _ != m - 1; _++)
+            a = a->next;
+        for (int _ = 0; _ != n; _++)
+            c = c->next;
+        ListNode* b = a->next, *d = c->next;
+        
+        ListNode* pre = b, *ptr = b->next;
+        while (ptr != d) {
+            ListNode* post = ptr->next;
+            ptr->next = pre;
+            pre = ptr;
+            ptr = post;
         }
-        right = right->next;
-        while (i < n) {
-            ListNode* node = right->next;
-            right->next = node->next;
-            node->next = left->next;
-            left->next = node;
-            i++;
-        }
+        b->next = d;
+        a->next = c;
         return dummy.next;
     }
 };
