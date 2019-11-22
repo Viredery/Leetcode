@@ -7,23 +7,16 @@ public:
         return str;
     }
 private:
-    string nextNum(string s) {
-        char num = s[0];
-        int pos = 1, times = 1;
-        string res = "";
+    string nextNum(const string& s) {
+        string res;
+        int pos = 0;
         while (pos < s.size()) {
-            if (s[pos] == num)
-                times++;
-            else {
-                res += ('0' + times);
-                res += num;
-                num = s[pos];
-                times = 1;
-            }
-            pos++;
+            int k = pos;
+            while (k < s.size() && s[k] == s[pos])
+                k++;
+            res += std::to_string(k - pos) + s[pos];
+            pos = k;
         }
-        res += ('0' + times);
-        res += num;
-        return res;
+        return std::move(res);
     }
 };

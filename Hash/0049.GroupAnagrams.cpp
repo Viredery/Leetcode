@@ -1,18 +1,15 @@
 class Solution {
 public:
     vector<vector<string>> groupAnagrams(vector<string>& strs) {
-        vector<vector<string>> res;
-        map<string, vector<string>> dict;
+        unordered_map<string, vector<string>> hash;
         for (auto str : strs) {
-            string tmp(str);
-            sort(tmp.begin(), tmp.end());
-            if (dict.find(tmp) == dict.end())
-                dict[tmp] = {str};
-            else
-                dict[tmp].push_back(str);
+            string key(str);
+            sort(key.begin(), key.end());
+            hash[key].push_back(str);
         }
-        for (auto iter = dict.begin(); iter != dict.end(); iter++)
-            res.push_back(move(iter->second));
+        vector<vector<string>> res;
+        for (auto item : hash)
+            res.push_back(move(item.second));
         return res;
     }
 };
