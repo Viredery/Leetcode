@@ -1,32 +1,38 @@
 class Solution {
 public:
     bool exist(vector<vector<char>>& board, string word) {
-        int m = board.size(), n = board[0].size();
+        if (board.empty() || board[0].empty())
+            return false;
+        m = board.size();
+        n = board[0].size();
+        
         for (int i = 0; i != m; i++)
             for (int j = 0; j != n; j++)
-                if (search(board, i, j, word, 0))
+                if (backtracking(board, i, j, word, 0))
                     return true;
         return false;
     }
     
 private:
-    bool search(vector<vector<char>>& board, int i, int j, string& word, int k) {
-        int m = board.size(), n = board[0].size();
+    int m, n;
+    vector<int> dx = {0, 1, 0, -1}, dy = {1, 0, -1, 0};
+    
+    bool backtracking(vector<vector<char>>& board, int i, int j, string& word, int k) {
+
         if (board[i][j] != word[k])
             return false;
         if (k == word.size() - 1)
             return true;
-        int tmp = board[i][j];
-        board[i][j] = char(0);
-        if (i - 1 >= 0 && search(board, i-1, j, word, k+1))
-            return true;
-        if (j - 1 >= 0 && search(board, i, j-1, word, k+1))
-            return true;
-        if (i + 1 < m && search(board, i+1, j, word, k+1))
-            return true;
-        if (j + 1 < n && search(board, i, j+1, word, k+1))
-            return true;
-        board[i][j] = tmp;
+        
+        board[i][j] = '.';
+        for (int pos = 0; pos != dx.size(); pos++) {
+            int x = i + dx[pos], y = j + dy[pos];
+            if (x < 0 || x >= m || y < 0 || y >= n)
+                continue;
+            if (backtracking(board, x, y, word, k + 1))
+                return true;
+        }
+        board[i][j] = word[k];
         return false;
     }
 };
