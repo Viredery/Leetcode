@@ -3,36 +3,21 @@ public:
     string minWindow(string s, string t) {
         if (s.empty() || t.empty())
             return "";
-        map<char, int> dictT, dictS;
-        for (char c : t) {
-            dictT[c]++;
+        unordered_map<char, int> hash;
+        for (char c : t)
+            hash[c]++;
+        int cnt = t.size();
+        
+        string res;
+        for (int l = 0, r = 0; r < s.size(); r++) {
+            if (hash[s[r]] > 0)
+                cnt--;
+            hash[s[r]]--;
+            while (l < s.size() && hash[s[l]] < 0)
+                hash[s[l++]]++;
+            if (cnt == 0 && (res.empty() || res.size() > r - l + 1))
+                res = s.substr(l, r - l + 1);
         }
-        cout << dictT.size() << endl;
-        vector<int> res{0, -1};
-        int require = 0;
-        int left = 0, right = -1;
-        while (right < (int)s.size() -1 || require == dictT.size()) {
-            if (require < dictT.size()) { // move right
-                right++;
-                if (dictT.find(s[right]) != dictT.end()) {
-                    dictS[s[right]]++;
-                    if (dictS[s[right]] == dictT[s[right]])
-                        require++;
-                }
-            } else { // move left
-                if (dictT.find(s[left]) != dictT.end()) {
-                    dictS[s[left]]--;
-                    if (dictS[s[left]] < dictT[s[left]])
-                        require--;
-                }
-                left++;
-            }
-            if (require == dictT.size() && 
-                    (res[0] > res[1] || res[1] - res[0] > right - left)) {
-                res[0] = left;
-                res[1] = right;
-            }
-        }
-        return res[0] > res[1] ? "" : s.substr(res[0], res[1] - res[0] + 1); 
+        return res;   
     }
 };
