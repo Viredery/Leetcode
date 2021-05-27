@@ -1,28 +1,24 @@
 class Solution {
 public:
     vector<int> maxSlidingWindow(vector<int>& nums, int k) {
-        deque<pair<int, int>> pairs;
-        vector<int> res;
-        int i = 0;
-        while (i != k) {
-            while (!pairs.empty() && pairs.back().second < nums[i])
-                pairs.pop_back();
-            pairs.push_back({i, nums[i]});
-            i++;
+        std::deque<int> decreased;
+        for (int r = 0; r != k; ++r) {
+            while (!decreased.empty() && decreased.back() < nums[r]) {
+                decreased.pop_back();
+            }
+            decreased.push_back(nums[r]);
         }
-        if (!pairs.empty())
-            res.push_back(pairs.front().second);
-        
-        while (i != nums.size()) {
-            if (pairs.front().first == i - k)
-                pairs.pop_front();
-            while (!pairs.empty() && pairs.back().second < nums[i])
-                pairs.pop_back();
-            pairs.push_back({i, nums[i]});
-            
-            res.push_back(pairs.front().second);
-            i++;
+        std::vector<int> window_maximum = {decreased.front()};
+        for (int r = k; r != nums.size(); ++r) {
+            if (nums[r - k] == decreased.front()) {
+                decreased.pop_front();
+            }
+            while (!decreased.empty() && decreased.back() < nums[r]) {
+                decreased.pop_back();
+            }
+            decreased.push_back(nums[r]);
+            window_maximum.push_back(decreased.front());
         }
-        return res;
+        return window_maximum;
     }
 };
