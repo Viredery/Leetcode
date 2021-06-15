@@ -1,57 +1,39 @@
-
 class LRUCache {
 public:
-    LRUCache(int capacity) : capacity(capacity) {
-        
-    }
+    LRUCache(int capacity) : capacity_(capacity) {}
     
     int get(int key) {
-        if (mapped.find(key) == mapped.end())
+        if (dict_.find(key) == dict_.end()) {
             return -1;
-        list<Node>::iterator iter = mapped[key];
-        Node node = *iter;
-        int val = node.get();
-        
-        cached.erase(iter);
-        cached.push_front(node);
-        mapped[key] = cached.begin();
-        
-        return val;
+        }
+        std::list<std::pair<int, int>>::iterator iter = dict_[key];
+        std::pair<int, int> key_value = *iter;
+        cache_queue_.erase(iter);
+        cache_queue_.push_front(key_value);
+        dict_[key] = cache_queue_.begin();
+        return key_value.second;
     }
     
     void put(int key, int value) {
-        if (mapped.find(key) != mapped.end()) {
-            list<Node>::iterator iter = mapped[key];
-            Node node = *iter;
-            node.set(value);
-            
-            cached.erase(iter);
-            cached.push_front(node);
-            mapped[key] = cached.begin();
+        std::pair<int, int> key_value = {key, value};
+        if (dict_.find(key) == dict_.end()) {
+            cache_queue_.push_front(key_value);
+            dict_[key] = cache_queue_.begin();
+            if (cache_queue_.size() > capacity_) {
+                dict_.erase(cache_queue_.back().first);
+                cache_queue_.pop_back();
+            }
             return;
         }
-        if (cached.size() == capacity) {
-            int key = cached.back().getKey();
-            cached.pop_back();
-            mapped.erase(key);
-        }
-        Node node(key, value);
-        cached.push_front(node);
-        mapped[key] = cached.begin();
+        cache_queue_.push_front(key_value);
+        cache_queue_.erase(dict_[key]);
+        dict_[key] = cache_queue_.begin();
     }
+    
 private:
-    struct Node {
-        int key;
-        int val;
-        Node(int k, int v) : key(k), val(v) {}
-        void set(int v) { val = v; }
-        int get() { return val; }
-        int getKey() { return key; }
-        
-    };
-    list<Node> cached;
-    unordered_map<int, list<Node>::iterator> mapped;
-    int capacity;
+    int capacity_ = 0;
+    std::list<std::pair<int, int>> cache_queue_;
+    std::unordered_map<int, std::list<std::pair<int, int>>::iterator> dict_;
 };
 
 /**
@@ -60,3 +42,4 @@ private:
  * int param_1 = obj->get(key);
  * obj->put(key,value);
  */
+
