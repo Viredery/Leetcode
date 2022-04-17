@@ -3,22 +3,23 @@
  * struct ListNode {
  *     int val;
  *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
 class Solution {
 public:
     ListNode* reverseList(ListNode* head) {
-        if (!head) 
-            return nullptr;
-        ListNode* pre = head, *cur = head->next;
-        while (cur) {
-            ListNode* post = cur->next;
-            cur->next = pre;
-            pre = cur;
-            cur = post;
+        ListNode dummy(0, head);
+        head = &dummy;
+        ListNode* pre = nullptr;
+        while (head->next) {
+            ListNode* node = head->next;
+            head->next = head->next->next;
+            node->next = pre;
+            pre = node;
         }
-        head->next = nullptr;
         return pre;
     }
 };
