@@ -1,14 +1,16 @@
 class Solution {
 public:
     int hIndex(vector<int>& citations) {
-        int l = 0, r = citations.size();
-        while (l < r) {
-            int mid = l + (r - l + 1 >> 1);
-            if (citations[citations.size() - mid] >= mid)
-                l = mid;
-            else
-                r = mid - 1;
+        const int size = citations.size();
+        int left = 0, right = size - 1;
+        while (left <= right) {
+            const int mid = left + (right - left) / 2;
+            if (citations[mid] >= size - mid) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
         }
-        return l;
+        return size - left;
     }
 };
