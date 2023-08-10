@@ -1,30 +1,30 @@
 class Solution {
 public:
-    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
         std::vector<int> num_prerequisites(numCourses, 0);
         for (const auto& prerequisite : prerequisites) {
             num_prerequisites[prerequisite[0]]++;
         }
 
-        std::queue<int> order;
+        std::vector<int> order;
+        order.reserve(numCourses);
         for (int i = 0; i != numCourses; ++i) {
             if (num_prerequisites[i]) {
                 continue;
             }
-            order.push(i);
+            order.push_back(i);
         }
 
-        int num_finished = 0;
-        while (!order.empty()) {
-            const int course = order.front();
-            order.pop();
-            num_finished++;
+        int cur_pos = 0;
+        while (cur_pos != order.size()) {
+            const int course = order[cur_pos];
             for (const auto& prerequisite : prerequisites) {
                 if (prerequisite[1] == course && --num_prerequisites[prerequisite[0]] == 0) {
-                    order.push(prerequisite[0]);
+                    order.push_back(prerequisite[0]);
                 }
             }
+            cur_pos++;
         }
-        return num_finished == numCourses;
+        return order.size() == numCourses ? order : vector<int>{};
     }
 };
