@@ -1,31 +1,28 @@
 class Solution {
 public:
     vector<vector<int>> subsetsWithDup(vector<int>& nums) {
-        n = nums.size();
         std::sort(nums.begin(), nums.end());
-        backtracking(nums, 0);
-        return res;
+        std::vector<std::vector<int>> subsets;
+        std::vector<int> cur_subset;
+        Backtracking(nums, 0, &cur_subset, &subsets);
+        return subsets;
     }
-    
 private:
-    int n;
-    
-    vector<vector<int>> res;
-    vector<int> cur;
-    
-    void backtracking(vector<int>& nums, int start) {
-        if (start == n) {
-            res.push_back(cur);
+    void Backtracking(const std::vector<int>& nums, 
+                      int start,
+                      std::vector<int>* cur_subset,
+                      std::vector<std::vector<int>>* subsets) const {
+        if (start == nums.size()) {
+            subsets->emplace_back(cur_subset->begin(), cur_subset->end());
             return;
         }
-    
-        int val = nums[start];
-        cur.push_back(val);
-        backtracking(nums, start + 1);
-        cur.pop_back();
-
-        while (start < nums.size() && nums[start] == val)
-            start++;
-        backtracking(nums, start);
+        cur_subset->push_back(nums[start]);
+        Backtracking(nums, start + 1, cur_subset, subsets);
+        cur_subset->pop_back();
+        int next = start + 1;
+        while (next != nums.size() && nums[next] == nums[start]) {
+            next++;
+        }
+        Backtracking(nums, next, cur_subset, subsets);
     }
 };
