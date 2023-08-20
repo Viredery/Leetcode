@@ -3,38 +3,43 @@
  * struct ListNode {
  *     int val;
  *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
 class Solution {
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        vector<ListNode*> nexts;
-        while (lists.size() > 1) {
-            for (int i = 0; i < lists.size(); i += 2) {
-                if (i + 1 < lists.size())
-                    nexts.push_back(mergeTwoLists(lists[i], lists[i + 1]));
-                else
-                    nexts.push_back(lists[i]);
-            }
-            lists = std::move(nexts);
+        if (lists.empty()) {
+            return nullptr;
         }
-        return lists.empty() ? nullptr : lists[0];
+        return Partion(lists, 0, lists.size() - 1);
     }
 private:
-    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-        ListNode head = ListNode(0), *node = &head;
-        while (l1 && l2) {
-            if (l1->val < l2->val) {
-                node->next = l1;
-                l1 = l1->next;
-            } else {
-                node->next = l2;
-                l2 = l2->next;
-            }
-            node = node->next;
+    ListNode* Partion(const vector<ListNode*>& lists, int left, int right) {
+        if (left == right) {
+            return lists[left];
         }
-        node->next = l1 ? l1 : l2;
-        return head.next;
+        const int mid = left + (right - left) / 2;
+        ListNode* list1 = Partion(lists, left, mid);
+        ListNode* list2 = Partion(lists, mid + 1, right);
+        return Merge(list1, list2);
+    }
+
+    ListNode* Merge(ListNode* one, ListNode* other) {
+        if (!one) {
+            return other;
+        }
+        if (!other) {
+            return one;
+        }
+        if (one->val <= other->val) {
+            one->next = Merge(one->next, other);
+            return one;
+        } else {
+            other->next = Merge(one, other->next);
+            return other;
+        }
     }
 };
