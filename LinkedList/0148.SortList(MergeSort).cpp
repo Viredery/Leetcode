@@ -3,49 +3,55 @@
  * struct ListNode {
  *     int val;
  *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
 class Solution {
 public:
     ListNode* sortList(ListNode* head) {
-        if (head == nullptr || head->next == nullptr)
+        if (head == nullptr || head->next == nullptr) {
             return head;
-        
-        ListNode* head1 = head;
-        ListNode* head2 = findMediumNode(head);
-        
-        head1 = sortList(head1);
-        head2 = sortList(head2);
-        return merge(head1, head2);
+        }
+
+        ListNode* mid_node = FindMidiumNode(head);
+        ListNode* other_head = mid_node->next;
+        mid_node->next = nullptr;
+        head = sortList(head);
+        other_head = sortList(other_head);
+
+        return MergeList(head, other_head);
     }
 private:
-    ListNode* findMediumNode(ListNode* head) {
-        ListNode* fast = head->next, *slow = head;
-        while (fast->next && fast->next->next) {
+    ListNode* FindMidiumNode(ListNode* head) {
+        ListNode* fast = head->next;
+        ListNode* slow = head;
+        while (fast != nullptr && fast->next != nullptr) {
             fast = fast->next->next;
             slow = slow->next;
         }
-        ListNode* post = slow->next;
-        slow->next = nullptr;
-        return post;
+        return slow;
     }
-    
-    ListNode* merge(ListNode* head1, ListNode* head2) {
-        ListNode dummy(0);
-        ListNode* ptr = &dummy;
-        while (head1 && head2) {
-            if (head1->val < head2->val) {
-                ptr->next = head1;
-                head1 = head1->next;
+
+    ListNode* MergeList(ListNode* one, ListNode* other) {
+        ListNode dummy{0};
+        ListNode* head = &dummy;
+        while (one && other) {
+            if (one->val <= other->val) {
+                head->next = one;
+                one = one->next;
             } else {
-                ptr->next = head2;
-                head2 = head2->next;
+                head->next = other;
+                other = other->next;
             }
-            ptr = ptr->next;
+            head = head->next;
         }
-        ListNode* head = head1 ? head1 : head2;
-        ptr->next = head;
+        if (one) {
+            head->next = one;
+        } else {
+            head->next = other;
+        }
         return dummy.next;
     }
 };

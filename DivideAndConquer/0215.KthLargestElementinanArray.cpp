@@ -1,22 +1,25 @@
 class Solution {
 public:
     int findKthLargest(vector<int>& nums, int k) {
-        return findKthLargest(nums, 0, nums.size() - 1, k);
+        return findKthLargest(nums, 0, nums.size() - 1, k - 1);
     }
 private:
     int findKthLargest(vector<int>& nums, int left, int right, int k) {
-        const int pivot = nums[right];
-        int next_larger_pos = left;
-        for (int i = left; i < right; ++i) {
-            if (nums[i] > pivot) {
-                std::swap(nums[next_larger_pos++], nums[i]);
+        std::default_random_engine rand_gen;
+        std::uniform_int_distribution distrib(left, right);
+        std::swap(nums[right], nums[distrib(rand_gen)]);
+
+        int wall = left;
+        for (int i = left; i != right; ++i) {
+            if (nums[i] >= nums[right]) {
+                std::swap(nums[i], nums[wall++]);
             }
         }
-        std::swap(nums[next_larger_pos], nums[right]);
-        if (next_larger_pos == k - 1) {
-            return nums[k - 1];
+        std::swap(nums[right], nums[wall]);
+        if (wall == k) {
+            return nums[wall];
         }
-        return next_larger_pos < k - 1 ? findKthLargest(nums, next_larger_pos + 1, right, k)
-                                       : findKthLargest(nums, left, next_larger_pos - 1, k);
+        return wall > k ? findKthLargest(nums, left, wall - 1, k) 
+                        : findKthLargest(nums, wall + 1, right, k);
     }
 };
