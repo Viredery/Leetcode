@@ -1,32 +1,36 @@
 class Solution {
 public:
     vector<vector<int>> threeSum(vector<int>& nums) {
-        vector<vector<int>> threeSumVec;
+        std::vector<std::vector<int>> res;
         std::sort(nums.begin(), nums.end());
-        int i = 0;
-        while (i + 2 < nums.size()) {
-            twoSum(nums, i++, threeSumVec);
-            while (i < nums.size() - 2 && nums[i] == nums[i-1])
-                i++;
+        for (int i = 0; i < nums.size() - 2; ++i) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            twoSum(nums, i, i + 1, nums.size() - 1, &res);
         }
-        return threeSumVec;
+        return res;
     }
 private:
-    void twoSum(vector<int>& nums, int i, vector<vector<int>>& threeSumVec) {
-        int target = -nums[i];
-        int left = i + 1, right = nums.size() - 1;
+    void twoSum(const std::vector<int>& nums, 
+                int first, 
+                int left,
+                int right,
+                std::vector<std::vector<int>>* res) {
         while (left < right) {
-            int sum = nums[left] + nums[right];
-            if (sum == target) {
-                while (left + 1 <= right && nums[left+1] == nums[left])
+            if (nums[first] + nums[left] + nums[right] == 0) {
+                res->push_back(std::vector<int>{nums[first], nums[left++], nums[right--]});
+                while (left < right && nums[left] == nums[left - 1]) {
                     left++;
-                while (right - 1 >= left && nums[right-1] == nums[right])
+                }
+                while (left < right && nums[right] == nums[right + 1]) {
                     right--;
-                threeSumVec.push_back({nums[i], nums[left++], nums[right--]});
-            } else if (sum > target)
-                right--;
-            else
+                }
+            } else if (nums[first] + nums[left] + nums[right] < 0) {
                 left++;
+            } else {
+                right--;
+            }
         }
     }
 };
