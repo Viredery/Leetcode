@@ -1,17 +1,18 @@
 class Solution {
 public:
     int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
-        int n = gas.size();
-        for (int i = 0, j; i < n; i += j+1) {
-            int total = 0;
-            for (j = 0; j < n; j++) {
-                total += gas[(i+j) % n] - cost[(i+j) % n];
-                if (total < 0)
-                    break;
+        int start_idx = -1;
+        int sum = 0;
+        for (int i = 0; i != gas.size() * 2; ++i) {
+            const int idx = i % gas.size();
+            sum += gas[idx] - cost[idx];
+            if (sum < 0) {
+                start_idx = -1;
+                sum = 0;
+            } else if (start_idx == -1) {
+                start_idx = i;
             }
-            if (j == n)
-                return i;
         }
-        return -1;
+        return start_idx >= 0 && start_idx < gas.size() ? start_idx : -1;
     }
 };

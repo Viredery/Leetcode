@@ -1,14 +1,17 @@
 class Solution {
 public:
     int maxArea(vector<int>& height) {
-        int area = 0, l = 0, r = height.size() - 1;
-        while (l < r) {
-            area = max(area, (r - l) * min(height[l], height[r]));
-            if (height[l] < height[r])
-                l++;
-            else
-                r--;
+        int left = 0;
+        int right = static_cast<int>(height.size()) - 1;
+        int max_water = 0;
+        while (left < right) {
+            max_water = std::max(max_water, std::min(height[left], height[right]) * (right - left));
+            if (height[left] < height[right]) {
+                left++;
+            } else {
+                right--;
+            }
         }
-        return area;
+        return max_water;
     }
 };
