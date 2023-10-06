@@ -1,70 +1,65 @@
 class Trie {
 public:
-    /** Initialize your data structure here. */
     Trie() {
-        root = new TrieNode();
+        
     }
     
-    ~Trie() {
-        delete root;
-    }
-    
-    /** Inserts a word into the trie. */
     void insert(string word) {
-        TrieNode* node = root;
-        for (char c : word) {
-            TrieNode* child = node->getNode(c);
-            if (child == nullptr) {
-                node->setNode(c);
-                child = node->getNode(c);
-            }
-            node = child;
+        TrieNode* node = &root;
+        for (const auto& c : word) {
+            node = node->CreateNextNodeIfNeeded(c);
         }
-        node->isWord = true;
+        node->is_word = true;
     }
     
-    /** Returns if the word is in the trie. */
     bool search(string word) {
-        TrieNode* node = root;
-        for (char c : word) {
-            TrieNode* child = node->getNode(c);
-            if (child == nullptr)
+        TrieNode* node = &root;
+        for (const auto& c : word) {
+            node = node->GetNextNode(c);
+            if (!node) {
                 return false;
-            node = child;
+            }
         }
-        return node->isWord;
+        return node->is_word;
     }
     
-    /** Returns if there is any word in the trie that starts with the given prefix. */
     bool startsWith(string prefix) {
-        TrieNode* node = root;
-        for (char c : prefix) {
-            TrieNode* child = node->getNode(c);
-            if (child == nullptr)
+        TrieNode* node = &root;
+        for (const auto& c : prefix) {
+            node = node->GetNextNode(c);
+            if (!node) {
                 return false;
-            node = child;
+            }
         }
         return true;
     }
 private:
-    class TrieNode {
-    public:
-        TrieNode() : isWord(false), next(26, nullptr) {}
+    struct TrieNode {
+        TrieNode() : is_word(false), next(26, nullptr) {}
         ~TrieNode() {
-            for (TrieNode* ptr : next)
-                if (ptr != nullptr)
+            for (const auto* ptr : next) {
+                if (ptr) {
                     delete ptr;
+                }
+            }
         }
-        void setNode(char c) {
-            next[c - 'a'] = new TrieNode();
-        }
-        TrieNode* getNode(char c) {
+
+        TrieNode* GetNextNode(char c) {
             return next[c - 'a'];
         }
-        bool isWord;
-        vector<TrieNode*> next;
+
+        TrieNode* CreateNextNodeIfNeeded(char c) {
+            if (!next[c - 'a']) {
+                next[c - 'a'] = new TrieNode{};
+            }
+            return next[c - 'a'];
+        }
+
+        bool is_word = false;
+        std::vector<TrieNode*> next;
     };
-    TrieNode* root;
+
+    TrieNode root;
 };
 
 /**

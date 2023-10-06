@@ -1,50 +1,68 @@
 class WordDictionary {
 public:
-    WordDictionary() {
-        trie = new Node();
-    }
+    WordDictionary() {}
     
     void addWord(string word) {
-        Node* cur = trie;
-        for (int i = 0; i != word.size(); ++i) {
-            if (!cur->next[word[i] - 'a']) {
-                cur->next[word[i] - 'a'] = new Node();
-            }
-            cur = cur->next[word[i] - 'a'];
+        TrieNode* node = &root_;
+        for (const auto& c : word) {
+            node = node->CreateNextNodeIfNeeded(c);
         }
-        cur->end = true;
+        node->is_word = true;
     }
     
     bool search(string word) {
-        return search(word, 0, trie);
+        cout << word <<endl;
+        return Search(word, 0, root_);
     }
+
 private:
-    struct Node {
-        bool end;
-        std::vector<Node*> next;
-        Node() : end(false), next(26, nullptr) {}
-    };
-    
-    bool search(const string& word, int pos, const Node* cur) {
-        for (int i = pos; i != word.size(); ++i) {
-            if (word[i] == '.') {
-                for (auto ptr : cur->next) {
-                    if (ptr && search(word, i + 1, ptr)) {
-                        return true;
-                    }
+    struct TrieNode {
+        TrieNode() : is_word(false), next(26, nullptr) {}
+        ~TrieNode() {
+            for (const auto* ptr : next) {
+                if (ptr) {
+                    delete ptr;
                 }
-                return false;
-            } else {
-                if (!cur->next[word[i] - 'a']) {
-                    return false;
-                }
-                cur = cur->next[word[i] - 'a'];
             }
         }
-        return cur->end;
+
+        TrieNode* GetNextNode(char c) const {
+            return next[c - 'a'];
+        }
+
+        TrieNode* CreateNextNodeIfNeeded(char c) {
+            if (!next[c - 'a']) {
+                next[c - 'a'] = new TrieNode{};
+            }
+            return next[c - 'a'];
+        }
+
+        bool is_word = false;
+        std::vector<TrieNode*> next;
+    };
+
+    bool Search(const string& word, int start_pos, const TrieNode& node) const {
+        if (start_pos == word.size()) {
+            return node.is_word;
+        }
+        const char c = word[start_pos];
+        if (c != '.') {
+            const TrieNode* next = node.GetNextNode(c);
+            if (!next) {
+                return false;
+            }
+            return Search(word, start_pos + 1, *next);
+        }
+
+        for (const auto* next_node : node.next) {
+            if (next_node && Search(word, start_pos + 1, *next_node)) {
+                return true;
+            }
+        }
+        return false;
     }
-    
-    Node* trie;
+
+    TrieNode root_;
 };
 
 /**
