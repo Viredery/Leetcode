@@ -1,59 +1,71 @@
-class UnionFind {
-public:
-    UnionFind(int s, int c) : arr(s, 0), count(c) {
-        for (int i = 0; i != s; i++)
-            arr[i] = i;
-    }
-    int getCount() {
-        return count;
-    }
-    void unionTwo(int p, int q) {
-        tuple<int, int> pTuple = find(p);
-        tuple<int, int> qTuple = find(q);
-        if (get<0>(pTuple) == get<0>(qTuple))
-            return;
-        get<1>(pTuple) < get<1>(qTuple) ? arr[get<0>(pTuple)] = get<0>(qTuple)
-                : arr[get<0>(qTuple)] = get<0>(pTuple);
-        --count;
-    }
-private:
-    vector<int> arr;
-    int count;
-    tuple<int, int> find(int p) {
-        int depth = 0;
-        while (p != arr[p]) {
-            p = arr[p];
-            ++depth;
-        }
-        return {p, depth};
-    }
-};
-
 class Solution {
 public:
     int numIslands(vector<vector<char>>& grid) {
-        int m = grid.size();
-        if (m == 0)
+        if (grid.empty() || grid.front().empty()) {
             return 0;
-        int n = grid[0].size();
-        
-        int count = 0;
-        for (int i = 0; i != m; i++)
-            for (int j = 0; j != n; j++)
-                if ('1' == grid[i][j])
-                    count += 1;
-        UnionFind uf(m*n, count);
-        for (int i = 0; i != m; i++)
-            for (int j = 0; j != n; j++) {
-                if ('0' == grid[i][j])
-                    continue;
-                if (j+1 < n && '1' == grid[i][j+1])
-                    uf.unionTwo(i*n+j, i*n+j+1);
-                if (i+1 < m && '1' == grid[i+1][j])
-                    uf.unionTwo(i*n+j, i*n+j+n);
+        }
+        const int m = grid.size();
+        const int n = grid.front().size();
+
+        int num_islands = 0;
+        for (int i = 0; i != m; ++i) {
+            for (int j = 0; j != n; ++j) {
+                if (grid[i][j] == '1') {
+                    ++num_islands;
+                }
             }
-        return uf.getCount();
+        }
+
+        UnionFindSet uf{m * n};
+        std::vector<std::vector<bool>> visited(m, std::vector<bool>(n, false));
+        for (int i = 0; i != m; ++i) {
+            for (int j = 0; j != n; ++j) {
+                if (grid[i][j] != '1' || visited[i][j]) {
+                    continue;
+                }
+                const int pos = i * n + j;
+                visited[i][j] = true;
+                for (const auto& [dx, dy] : DIRECTION) {
+                    const int x = i + dx;
+                    const int y = j + dy;
+                    if (x < 0 || x >= m || y < 0 || y >= n) {
+                        continue;
+                    }
+                    if (grid[x][y] != '1' || visited[x][y]) {
+                        continue;
+                    }
+                    const int other_pos = x * n + y;
+                    if (uf.Find(pos) != uf.Find(other_pos)) {
+                        uf.Union(pos, other_pos);
+                        --num_islands;
+                    }
+                }
+            }
+        }
+
+        return num_islands;
     }
+
+private:
+    static constexpr std::array<std::pair<int, int>, 4> DIRECTION = {
+        std::make_pair(-1, 0), std::make_pair(0, -1), std::make_pair(1, 0), std::make_pair(0, 1)};
+
+    struct UnionFindSet {
+        UnionFindSet(int size) : parents(size, 0) {
+            std::iota(parents.begin(), parents.end(), 0);
+        }
+
+        int Find(int index) {
+            if (parents[index] != index) {
+                parents[index] = Find(parents[index]);
+            }
+            return parents[index];
+        }
+
+        void Union(int one, int other) {
+            parents[Find(one)] = Find(other);
+        }
+
+        std::vector<int> parents;
+    };
 };
-
-
