@@ -12,18 +12,18 @@
 class Solution {
 public:
     vector<int> inorderTraversal(TreeNode* root) {
-        std::vector<int> order;
-        std::stack<TreeNode*> nodes;
-        while (!nodes.empty() || root) {
+        std::vector<int> ordered_vals;
+        std::stack<const TreeNode*> st;
+        while (root || !st.empty()) {
             while (root) {
-                nodes.push(root);
+                st.push(root);
                 root = root->left;
             }
-            root = nodes.top();
-            nodes.pop();
-            order.push_back(root->val);
-            root = root->right;
+            const TreeNode* node = st.top();
+            st.pop();
+            ordered_vals.push_back(node->val);
+            root = node->right;
         }
-        return order;
+        return ordered_vals;
     }
 };

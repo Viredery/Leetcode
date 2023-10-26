@@ -4,35 +4,37 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
     vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
-        vector<vector<int>> res;
-        list<TreeNode*> level;
-        if (root)
-            level.push_back(root);
-        bool left2right = true;
-        while (!level.empty()) {
-            int size = level.size();
-            vector<int> res_lvl(size, 0);
-            for (int i = 0; i != size; i++) {
-                TreeNode* node = level.front();
-                level.pop_front();
-                
-                int idx = left2right ? i : size - 1 - i;
-                res_lvl[idx] = node->val;
-                
-                if (node->left)
-                    level.push_back(node->left);
-                if (node->right)
-                    level.push_back(node->right);
-            }
-            left2right = !left2right;
-            res.push_back(std::move(res_lvl));
+        std::vector<std::vector<int>> ordered_vals;
+        std::vector<const TreeNode*> level_nodes;
+        int depth = 1;
+        if (root) {
+            level_nodes.push_back(root);
         }
-        return res;
+        while (!level_nodes.empty()) {
+            std::vector<const TreeNode*> next_level_nodes;
+            const int size = level_nodes.size();
+            ordered_vals.push_back(std::vector<int>(size));
+            for (int i = 0; i != size; ++i) {
+                const int idx = depth % 2 == 1 ? i : size - 1 - i;
+                ordered_vals.back()[i] = level_nodes[idx]->val;
+                if (level_nodes[i]->left) {
+                    next_level_nodes.push_back(level_nodes[i]->left);
+                }
+                if (level_nodes[i]->right) {
+                    next_level_nodes.push_back(level_nodes[i]->right);
+                }
+            }
+            ++depth;
+            level_nodes = std::move(next_level_nodes);
+        }
+        return ordered_vals;
     }
 };

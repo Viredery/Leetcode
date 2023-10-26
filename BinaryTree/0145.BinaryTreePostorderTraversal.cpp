@@ -4,31 +4,32 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
     vector<int> postorderTraversal(TreeNode* root) {
-        vector<int> postorderNum;
-        stack<TreeNode*> visitedNodes;
-        TreeNode* lastVisited = nullptr;
-        while (!visitedNodes.empty() || root) {
+        std::vector<int> ordered_vals;
+        std::stack<const TreeNode*> st;
+        const TreeNode* prev_node = nullptr;
+        while (root || !st.empty()) {
             while (root) {
-                visitedNodes.push(root);
+                st.push(root);
+                prev_node = root;
                 root = root->left;
             }
-            if (visitedNodes.empty())
-                break;
-            auto node = visitedNodes.top();
-            if (!node->right || node->right == lastVisited) {
-                visitedNodes.pop();
-                postorderNum.push_back(node->val);
-                lastVisited = node;
+            const TreeNode* node = st.top();
+            if (!node->right || node->right == prev_node) {
+                ordered_vals.push_back(node->val);
+                st.pop();
+                prev_node = node;
             } else {
                 root = node->right;
             }
         }
-        return postorderNum;
+        return ordered_vals;
     }
 };
