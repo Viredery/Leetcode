@@ -13,20 +13,15 @@ class Solution {
 public:
     vector<int> preorderTraversal(TreeNode* root) {
         std::vector<int> ordered_vals;
-        std::stack<const TreeNode*> st;
-        if (root) {
-            st.push(root);
-        }
-        while (!st.empty()) {
-            const TreeNode* node = st.top();
+        std::stack<TreeNode*> st;
+        while (!st.empty() || root) {
+            while (root) {
+                st.push(root);
+                ordered_vals.push_back(root->val);
+                root = root->left;
+            }
+            root = st.top()->right;
             st.pop();
-            ordered_vals.push_back(node->val);
-            if (node->right) {
-                st.push(node->right);
-            }
-            if (node->left) {
-                st.push(node->left);
-            }
         }
         return ordered_vals;
     }
