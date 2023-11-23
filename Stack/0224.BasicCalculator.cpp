@@ -1,35 +1,37 @@
 class Solution {
 public:
     int calculate(string s) {
-        int res = 0, ops = 1, operand = 0;
-        stack<int> st;
-        for (int i = 0; i != s.size(); i++) {
-            if (s[i] == ' ')
-                continue;
-            if (s[i] >= '0' && s[i] <= '9')
-                operand = operand * 10 + (s[i] - '0');
-            else if (s[i] == '+') {
-                res += operand * ops;
-                operand = 0;
-                ops = 1;
-            } else if (s[i] == '-') {
-                res += operand * ops;
-                operand = 0;
-                ops = -1;
-            } else if (s[i] == '(') {
-                st.push(res);
-                st.push(ops);
-                res = 0;
-                ops = 1;
-            } else if (s[i] == ')') {
-                res += operand * ops;
-                ops = st.top();
-                st.pop();
-                res = st.top() + res * ops;
-                st.pop();
-                operand = 0;
+       int result = 0;
+       calculate(s, 0, &result);
+       return result; 
+    }
+private:
+    int calculate(const std::string& s, int start_pos, int* result) const {
+        std::vector<int> st;
+        char prev_operator = '+';
+        int num = 0;
+        int idx = start_pos;
+        while (idx < s.size()) {
+            const char c = s[idx++];
+            if (c == '(') {
+                idx = calculate(s, idx, &num);
+            }
+            if (c >= '0' && c <= '9') {
+                num = num * 10 + (c - '0');
+            }
+            if (c == '+' || c == '-' || c == ')' || idx == s.size()) {
+                if (prev_operator == '-') {
+                    num = -num;
+                }
+                prev_operator = c;
+                st.push_back(num);
+                num = 0;
+            }
+            if (c == ')') {
+                break;
             }
         }
-        return res + ops * operand;
+        *result = std::accumulate(st.begin(), st.end(), 0);
+        return idx;
     }
 };

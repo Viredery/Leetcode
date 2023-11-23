@@ -1,30 +1,29 @@
 class Solution {
 public:
     int calculate(string s) {
-        int res = 0, tmpRes = 0;
-        int operand = 0;
-        char lastOps = '+';
-        vector<char> ops = {'+', '-', '*', '/'};
-            
-        for (int i = 0; i != s.size(); i++) {
-            if (s[i] >= '0' && s[i] <= '9')
-                operand = operand * 10 + (s[i] - '0');
-            if (i + 1 == s.size() || find(ops.begin(), ops.end(), s[i]) != ops.end()) {
-                if (lastOps == '*')
-                    tmpRes *= operand;
-                else if (lastOps == '/')
-                    tmpRes /= operand;
-                else if (lastOps == '+') {
-                    res += tmpRes;
-                    tmpRes = operand;
-                } else if (lastOps == '-') {
-                    res += tmpRes;
-                    tmpRes = -operand;
+        std::vector<int> st;
+        char prev_operator = '+';
+        int num = 0;
+        int idx = 0;
+        while (idx < s.size()) {
+            const char c = s[idx++];
+            if (c >= '0' && c <= '9') {
+                num = num * 10 + (c - '0');
+            }
+            if (c == '+' || c == '-' || c == '*' || c == '/' || idx == s.size()) {
+                if (prev_operator == '+') {
+                    st.push_back(num);
+                } else if (prev_operator == '-') {
+                    st.push_back(-num);
+                } else if (prev_operator == '*') {
+                    st.back() *= num;
+                } else if (prev_operator == '/') {
+                    st.back() /= num;
                 }
-                operand = 0;
-                lastOps = s[i];
-            }  
+                prev_operator = c;
+                num = 0;
+            }
         }
-        return res + tmpRes;
+        return std::accumulate(st.begin(), st.end(), 0);
     }
 };
