@@ -1,13 +1,13 @@
 class Solution {
 public:
     bool canJump(vector<int>& nums) {
-        int max_arrivable = 0;
+        int current_fastest_position = 0;
         for (int i = 0; i != nums.size(); ++i) {
-            if (i > max_arrivable) {
+            if (i > current_fastest_position) {
                 break;
             }
-            max_arrivable = std::max(max_arrivable, i + nums[i]);
+            current_fastest_position = std::max(current_fastest_position, i + nums[i]);
         }
-        return max_arrivable >= nums.size() - 1;
+        return current_fastest_position + 1 >= nums.size();
     }
 };
