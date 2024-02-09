@@ -1,26 +1,25 @@
 class Solution {
 public:
     int threeSumClosest(vector<int>& nums, int target) {
-        int dis = INT_MAX, res = 0;
-        std::sort(nums.begin(), nums.end());
-        for (int i = 0; i + 2 < nums.size(); i++)
-            twoSum(nums, i, target, dis, res);
-        return res;
+        int closest_sum = 2 * 10e4 + 1;
+        std::ranges::sort(nums);
+        for (int i = 0; i < nums.size() - 2; ++i) {
+            twoSumClosest(nums, i + 1, nums.size() - 1, target, nums[i], &closest_sum);
+        }
+        return closest_sum;
     }
 private:
-    void twoSum(vector<int>& nums, int pos, int target, int& dis, int& res) {
-        int left = pos + 1, right = nums.size() - 1;
+    void twoSumClosest(vector<int>& nums, int left, int right, int target, int first_num, int* closest_sum) {
         while (left < right) {
-            int sum = nums[left] + nums[right] + nums[pos];
-            int curDis = sum <= target ? target - sum : sum - target;
-            if (curDis < dis) {
-                dis = curDis;
-                res = sum;
+            const int sum = first_num + nums[left] + nums[right];
+            if (std::abs(sum - target) < std::abs(*closest_sum - target)) {
+                *closest_sum = sum;
             }
-            if (sum <= target)
-                left++;
-            else
-                right--;
+            if (sum < target) {
+                ++left;
+            } else {
+                --right;
+            }
         }
     }
 };
