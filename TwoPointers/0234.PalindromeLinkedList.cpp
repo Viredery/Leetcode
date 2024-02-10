@@ -11,31 +11,43 @@
 class Solution {
 public:
     bool isPalindrome(ListNode* head) {
-        ListNode dummy(0, head);
-        ListNode* slow = &dummy, *fast = &dummy;
-        while (fast->next && fast->next->next) {
+        ListNode* other_head = GetHeadOfHalfNodes(head);
+        other_head = Reverse(other_head);
+        while (other_head && head) {
+            if (other_head->val != head->val) {
+                return false;
+            }
+            head = head->next;
+            other_head = other_head->next;
+        }
+        return true;
+    }
+private:
+    ListNode* GetHeadOfHalfNodes(ListNode* head) {
+        ListNode dummy_node(0, head);
+        ListNode* fast = &dummy_node;
+        ListNode* slow = &dummy_node;
+        while (fast && fast->next) {
             slow = slow->next;
             fast = fast->next->next;
         }
-        ListNode* new_head = slow->next;
+        ListNode* other_head = slow->next;
         slow->next = nullptr;
-        
-        ListNode* pre = nullptr;
-        while (new_head) {
-            ListNode* next = new_head->next;
-            new_head->next = pre;
-            pre = new_head;
-            new_head = next;
+        return other_head;
+    }
+
+    ListNode* Reverse(ListNode* head) {
+        if (!head || !head->next) {
+            return head;
         }
-        
-        ListNode* cur1 = dummy.next, *cur2 = pre;
-        while (cur1) {
-            if (cur1->val != cur2->val) {
-                return false;
-            }
-            cur1 = cur1->next;
-            cur2 = cur2->next;
+        ListNode* pre_node = nullptr;
+        ListNode* current_node = head;
+        while (current_node) {
+            ListNode* next_node = current_node->next;
+            current_node->next = pre_node;
+            pre_node = current_node;
+            current_node = next_node;
         }
-        return true;
+        return pre_node;
     }
 };

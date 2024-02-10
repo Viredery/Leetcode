@@ -1,32 +1,34 @@
 class Solution {
 public:
     vector<vector<string>> partition(string s) {
-        vector<vector<string>> res;
-        vector<string> split;
-        
-        backtracking(s, 0, split, res);
-        return res;
+        std::vector<std::vector<std::string>> palindrome;
+        std::vector<std::string> state;
+        Backtracking(s, 0, &state, &palindrome);
+        return palindrome;
     }
 private:
-    void backtracking(string s, int pos, vector<string>& split, vector<vector<string>>& res) {
-        if (pos == s.size()) {
-            res.push_back(split);
+    void Backtracking(const std::string& s, 
+                      int start, 
+                      std::vector<std::string>* state, 
+                      std::vector<std::vector<std::string>>* palindrome) {
+        if (start == s.size()) {
+            palindrome->push_back(*state);
             return;
         }
-        
-        for (int i = pos; i != s.size(); i++) {
-            if (!isPalindrome(s, pos, i))
-                continue;
-            split.push_back(s.substr(pos, i-pos+1));
-            backtracking(s, i+1, split, res);
-            split.pop_back();
+        for (int i = start; i != s.size(); ++i) {
+            if (IsPalindrome(s, start, i)) {
+                state->push_back(s.substr(start, i - start + 1));
+                Backtracking(s, i + 1, state, palindrome);
+                state->pop_back();
+            }
         }
     }
-    
-    bool isPalindrome(string& s, int l, int r) {
-        while (l < r)
-            if (s[l++] != s[r--])
+    bool IsPalindrome(const std::string& s, int l, int r) {
+        while (l < r) {
+            if (s[l++] != s[r--]) {
                 return false;
+            }
+        }
         return true;
     }
 };
